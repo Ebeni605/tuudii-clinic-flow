@@ -1411,6 +1411,218 @@ export type Database = {
           },
         ]
       }
+      prescription_events: {
+        Row: {
+          action: string
+          actor_id: string
+          created_at: string
+          id: string
+          prescription_id: string
+          reason: string | null
+        }
+        Insert: {
+          action: string
+          actor_id: string
+          created_at?: string
+          id?: string
+          prescription_id: string
+          reason?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string
+          created_at?: string
+          id?: string
+          prescription_id?: string
+          reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescription_events_prescription_id_fkey"
+            columns: ["prescription_id"]
+            isOneToOne: false
+            referencedRelation: "prescriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prescription_items: {
+        Row: {
+          brand_name: string
+          dosage_form: string
+          dose: string
+          drug_name: string
+          duration: string
+          frequency: string
+          id: string
+          instructions: string
+          other_information: string
+          position: number
+          prescription_id: string
+          quantity: string
+          route: string
+          strength: string
+        }
+        Insert: {
+          brand_name?: string
+          dosage_form?: string
+          dose?: string
+          drug_name: string
+          duration?: string
+          frequency?: string
+          id?: string
+          instructions?: string
+          other_information?: string
+          position: number
+          prescription_id: string
+          quantity?: string
+          route?: string
+          strength?: string
+        }
+        Update: {
+          brand_name?: string
+          dosage_form?: string
+          dose?: string
+          drug_name?: string
+          duration?: string
+          frequency?: string
+          id?: string
+          instructions?: string
+          other_information?: string
+          position?: number
+          prescription_id?: string
+          quantity?: string
+          route?: string
+          strength?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescription_items_prescription_id_fkey"
+            columns: ["prescription_id"]
+            isOneToOne: false
+            referencedRelation: "prescriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prescription_settings: {
+        Row: {
+          address: string
+          id: number
+          phones: string
+        }
+        Insert: {
+          address?: string
+          id?: number
+          phones?: string
+        }
+        Update: {
+          address?: string
+          id?: number
+          phones?: string
+        }
+        Relationships: []
+      }
+      prescriptions: {
+        Row: {
+          cancel_reason: string | null
+          cancelled_at: string | null
+          clinician_id: string
+          consultation_id: string
+          created_at: string
+          diagnosis_id: string | null
+          finalized_at: string | null
+          id: string
+          patient_id: string
+          prescription_number: string
+          print_count: number
+          replaces_id: string | null
+          snapshot: Json
+          status: string
+          updated_at: string
+          visit_id: string
+        }
+        Insert: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          clinician_id: string
+          consultation_id: string
+          created_at?: string
+          diagnosis_id?: string | null
+          finalized_at?: string | null
+          id?: string
+          patient_id: string
+          prescription_number?: string
+          print_count?: number
+          replaces_id?: string | null
+          snapshot?: Json
+          status?: string
+          updated_at?: string
+          visit_id: string
+        }
+        Update: {
+          cancel_reason?: string | null
+          cancelled_at?: string | null
+          clinician_id?: string
+          consultation_id?: string
+          created_at?: string
+          diagnosis_id?: string | null
+          finalized_at?: string | null
+          id?: string
+          patient_id?: string
+          prescription_number?: string
+          print_count?: number
+          replaces_id?: string | null
+          snapshot?: Json
+          status?: string
+          updated_at?: string
+          visit_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prescriptions_clinician_id_fkey"
+            columns: ["clinician_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescriptions_consultation_id_fkey"
+            columns: ["consultation_id"]
+            isOneToOne: false
+            referencedRelation: "consultations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescriptions_diagnosis_id_fkey"
+            columns: ["diagnosis_id"]
+            isOneToOne: false
+            referencedRelation: "diagnoses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescriptions_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescriptions_replaces_id_fkey"
+            columns: ["replaces_id"]
+            isOneToOne: false
+            referencedRelation: "prescriptions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prescriptions_visit_id_fkey"
+            columns: ["visit_id"]
+            isOneToOne: false
+            referencedRelation: "visits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       price_history: {
         Row: {
           changed_at: string
@@ -1459,6 +1671,8 @@ export type Database = {
           full_name: string
           id: string
           phone: string | null
+          professional_registration: string | null
+          qualification: string | null
           rejected_at: string | null
           rejected_by: string | null
           rejection_reason: string | null
@@ -1476,6 +1690,8 @@ export type Database = {
           full_name?: string
           id: string
           phone?: string | null
+          professional_registration?: string | null
+          qualification?: string | null
           rejected_at?: string | null
           rejected_by?: string | null
           rejection_reason?: string | null
@@ -1493,6 +1709,8 @@ export type Database = {
           full_name?: string
           id?: string
           phone?: string | null
+          professional_registration?: string | null
+          qualification?: string | null
           rejected_at?: string | null
           rejected_by?: string | null
           rejection_reason?: string | null
@@ -1855,6 +2073,14 @@ export type Database = {
       }
       invoice_balance: { Args: { _invoice: string }; Returns: number }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      prescription_action: {
+        Args: { _action: string; _id: string; _reason?: string }
+        Returns: undefined
+      }
+      prescription_snapshot: {
+        Args: { _clinician: string; _dx: string; _visit: string }
+        Returns: Json
+      }
       receive_specimen: {
         Args: { _condition: string; _notes?: string; _specimen_id: string }
         Returns: undefined
@@ -1919,6 +2145,16 @@ export type Database = {
           _value: string
         }
         Returns: Json
+      }
+      save_prescription: {
+        Args: {
+          _diagnosis_id: string
+          _items: Json
+          _prescription_id?: string
+          _replaces_id?: string
+          _visit_id: string
+        }
+        Returns: string
       }
       update_my_profile: {
         Args: { _full_name: string; _phone: string }
