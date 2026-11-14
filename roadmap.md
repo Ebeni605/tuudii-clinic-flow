@@ -1,5 +1,11 @@
 # Roadmap
 
+## Digital prescriptions
+- [ ] Secure draft/items/history storage and approved prescriber credentials
+- [ ] OPD prescription editor, authorization, cancellation/reissue and history
+- [ ] Clinic-branded A4 preview, printing and PDF export
+- [ ] Rule tests, fictional end-to-end checks and print verification
+
 ## Phase 3 — OPD (done)
 ## Phase 4 — Laboratory (done)
 
