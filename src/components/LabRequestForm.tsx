@@ -23,7 +23,7 @@ export function LabRequestForm({ visitId, onDone }: { visitId: string; onDone?: 
   const [notes, setNotes] = useState("");
   const [busy, setBusy] = useState(false);
   const qc = useQueryClient();
-  const active = (tests ?? []).filter((t) => t.active);
+  const active = (tests ?? []).filter((t) => t.active && t.approval_status !== "needs_confirmation");
 
   function toggle(id: string) {
     const n = new Set(picked);
