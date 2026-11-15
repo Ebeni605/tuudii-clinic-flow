@@ -18,10 +18,11 @@ import { ROLE_LABELS, APPROVAL_LABELS, type AppRole } from "@/lib/workflow";
 import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { PrescriberSettings } from "@/components/admin/PrescriberSettings";
 
 export const Route = createFileRoute("/_authenticated/admin/staff")({
   beforeLoad: requireArea("admin"),
-  head: () => ({ meta: [{ title: "Staff & Roles — Two D Medium Clinic" }] }),
+  head: () => ({ meta: [{ title: "Staff & Roles — Two D Medium Clinic" }, { name: "description", content: "Manage clinic staff, roles and verified prescriber credentials." }, { property: "og:title", content: "Staff & Roles — Two D Medium Clinic" }, { property: "og:description", content: "Manage clinic staff, roles and verified prescriber credentials." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="admin"><Staff /></RequireArea>,
 });
 
@@ -101,6 +102,7 @@ function Staff() {
           </TableBody>
         </Table>
       </Card>
+      <PrescriberSettings />
       <Dialog open={!!edit} onOpenChange={(o) => !o && setEdit(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>Edit {edit?.name}</DialogTitle></DialogHeader>

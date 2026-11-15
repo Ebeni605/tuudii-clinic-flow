@@ -40,6 +40,7 @@ import { Route as AuthenticatedReceptionQueueRouteImport } from './routes/_authe
 import { Route as AuthenticatedBillingReceiptPaymentIdRouteImport } from './routes/_authenticated/billing.receipt.$paymentId'
 import { Route as AuthenticatedLabReportRequestIdRouteImport } from './routes/_authenticated/lab.report.$requestId'
 import { Route as AuthenticatedLabRequestRequestIdRouteImport } from './routes/_authenticated/lab.request.$requestId'
+import { Route as AuthenticatedOpdPrescriptionPrescriptionIdRouteImport } from './routes/_authenticated/opd.prescription.$prescriptionId'
 import { Route as AuthenticatedOpdVisitVisitIdRouteImport } from './routes/_authenticated/opd.visit.$visitId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -213,6 +214,12 @@ const AuthenticatedLabRequestRequestIdRoute =
     path: '/lab/request/$requestId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedOpdPrescriptionPrescriptionIdRoute =
+  AuthenticatedOpdPrescriptionPrescriptionIdRouteImport.update({
+    id: '/opd/prescription/$prescriptionId',
+    path: '/opd/prescription/$prescriptionId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedOpdVisitVisitIdRoute =
   AuthenticatedOpdVisitVisitIdRouteImport.update({
     id: '/opd/visit/$visitId',
@@ -251,6 +258,7 @@ export interface FileRoutesByFullPath {
   '/billing/receipt/$paymentId': typeof AuthenticatedBillingReceiptPaymentIdRoute
   '/lab/report/$requestId': typeof AuthenticatedLabReportRequestIdRoute
   '/lab/request/$requestId': typeof AuthenticatedLabRequestRequestIdRoute
+  '/opd/prescription/$prescriptionId': typeof AuthenticatedOpdPrescriptionPrescriptionIdRoute
   '/opd/visit/$visitId': typeof AuthenticatedOpdVisitVisitIdRoute
 }
 export interface FileRoutesByTo {
@@ -284,6 +292,7 @@ export interface FileRoutesByTo {
   '/billing/receipt/$paymentId': typeof AuthenticatedBillingReceiptPaymentIdRoute
   '/lab/report/$requestId': typeof AuthenticatedLabReportRequestIdRoute
   '/lab/request/$requestId': typeof AuthenticatedLabRequestRequestIdRoute
+  '/opd/prescription/$prescriptionId': typeof AuthenticatedOpdPrescriptionPrescriptionIdRoute
   '/opd/visit/$visitId': typeof AuthenticatedOpdVisitVisitIdRoute
 }
 export interface FileRoutesById {
@@ -319,6 +328,7 @@ export interface FileRoutesById {
   '/_authenticated/billing/receipt/$paymentId': typeof AuthenticatedBillingReceiptPaymentIdRoute
   '/_authenticated/lab/report/$requestId': typeof AuthenticatedLabReportRequestIdRoute
   '/_authenticated/lab/request/$requestId': typeof AuthenticatedLabRequestRequestIdRoute
+  '/_authenticated/opd/prescription/$prescriptionId': typeof AuthenticatedOpdPrescriptionPrescriptionIdRoute
   '/_authenticated/opd/visit/$visitId': typeof AuthenticatedOpdVisitVisitIdRoute
 }
 export interface FileRouteTypes {
@@ -354,6 +364,7 @@ export interface FileRouteTypes {
     | '/billing/receipt/$paymentId'
     | '/lab/report/$requestId'
     | '/lab/request/$requestId'
+    | '/opd/prescription/$prescriptionId'
     | '/opd/visit/$visitId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -387,6 +398,7 @@ export interface FileRouteTypes {
     | '/billing/receipt/$paymentId'
     | '/lab/report/$requestId'
     | '/lab/request/$requestId'
+    | '/opd/prescription/$prescriptionId'
     | '/opd/visit/$visitId'
   id:
     | '__root__'
@@ -421,6 +433,7 @@ export interface FileRouteTypes {
     | '/_authenticated/billing/receipt/$paymentId'
     | '/_authenticated/lab/report/$requestId'
     | '/_authenticated/lab/request/$requestId'
+    | '/_authenticated/opd/prescription/$prescriptionId'
     | '/_authenticated/opd/visit/$visitId'
   fileRoutesById: FileRoutesById
 }
@@ -651,6 +664,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLabRequestRequestIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/opd/prescription/$prescriptionId': {
+      id: '/_authenticated/opd/prescription/$prescriptionId'
+      path: '/opd/prescription/$prescriptionId'
+      fullPath: '/opd/prescription/$prescriptionId'
+      preLoaderRoute: typeof AuthenticatedOpdPrescriptionPrescriptionIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/opd/visit/$visitId': {
       id: '/_authenticated/opd/visit/$visitId'
       path: '/opd/visit/$visitId'
@@ -688,6 +708,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBillingReceiptPaymentIdRoute: typeof AuthenticatedBillingReceiptPaymentIdRoute
   AuthenticatedLabReportRequestIdRoute: typeof AuthenticatedLabReportRequestIdRoute
   AuthenticatedLabRequestRequestIdRoute: typeof AuthenticatedLabRequestRequestIdRoute
+  AuthenticatedOpdPrescriptionPrescriptionIdRoute: typeof AuthenticatedOpdPrescriptionPrescriptionIdRoute
   AuthenticatedOpdVisitVisitIdRoute: typeof AuthenticatedOpdVisitVisitIdRoute
 }
 
@@ -720,6 +741,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
     AuthenticatedBillingReceiptPaymentIdRoute,
   AuthenticatedLabReportRequestIdRoute: AuthenticatedLabReportRequestIdRoute,
   AuthenticatedLabRequestRequestIdRoute: AuthenticatedLabRequestRequestIdRoute,
+  AuthenticatedOpdPrescriptionPrescriptionIdRoute:
+    AuthenticatedOpdPrescriptionPrescriptionIdRoute,
   AuthenticatedOpdVisitVisitIdRoute: AuthenticatedOpdVisitVisitIdRoute,
 }
 
