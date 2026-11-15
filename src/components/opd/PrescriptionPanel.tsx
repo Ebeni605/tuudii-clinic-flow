@@ -16,7 +16,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { F } from "./Field";
 
 const LABELS: Record<keyof Medicine, string> = { drug_name: "Generic drug name", brand_name: "Brand name", strength: "Strength", dosage_form: "Dosage form", dose: "Dose", route: "Route", frequency: "Frequency", duration: "Duration", quantity: "Quantity", instructions: "How to use", other_information: "Other information" };
-type HistoryRow = NonNullable<Awaited<ReturnType<ReturnType<typeof prescriptionHistoryQuery>["queryFn"]>>>; // Query data is inferred below instead.
 
 export function PrescriptionPanel({ visitId, patientId, clinicianId, validEncounter }: { visitId: string; patientId: string; clinicianId: string | null; validEncounter: boolean }) {
   const { data: me } = useStaff();
