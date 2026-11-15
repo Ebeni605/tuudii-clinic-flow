@@ -16,6 +16,7 @@ import { F, TemplateInput } from "@/components/opd/Field";
 import { VitalsPanel } from "@/components/opd/VitalsPanel";
 import { DiagnosisPanel } from "@/components/opd/DiagnosisPanel";
 import { MedicationPanel } from "@/components/opd/MedicationPanel";
+import { PrescriptionPanel } from "@/components/opd/PrescriptionPanel";
 import { LabResults } from "@/components/opd/LabResults";
 import { AmendmentsPanel } from "@/components/opd/AmendmentsPanel";
 import { ClinicalHistory } from "@/components/opd/ClinicalHistory";
@@ -28,7 +29,7 @@ import { ageFromDob, ancEstimates, canCompleteVisit, isLabFinal, OPEN_ENCOUNTER_
 
 export const Route = createFileRoute("/_authenticated/opd/visit/$visitId")({
   beforeLoad: requireArea("opd"),
-  head: () => ({ meta: [{ title: "Consultation — Two D Medium Clinic" }, { name: "description", content: "OPD consultation and encounter record." }] }),
+  head: () => ({ meta: [{ title: "Consultation — Two D Medium Clinic" }, { name: "description", content: "OPD consultation, prescriptions and encounter record." }, { property: "og:title", content: "Consultation — Two D Medium Clinic" }, { property: "og:description", content: "OPD consultation, prescriptions and encounter record." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="opd"><Encounter /></RequireArea>,
 });
 
@@ -71,7 +72,8 @@ function Encounter() {
   if (error) return <LoadError message="Could not load this visit." onRetry={() => refetch()} />;
   if (!visit) return <LoadError message="This visit was not found." />;
 
-  const p = visit.patients!;
+  const p = visit.patients;
+  if (!p) return <LoadError message="Patient record not found." />;
   const status = visit.status as VisitStatus;
   const template = templateFor(visit.service_key);
   const svcName = services?.find((s) => s.key === visit.service_key)?.name ?? visit.service_key;
@@ -132,7 +134,8 @@ function Encounter() {
   }
 
   async function openNote() {
-    const { error } = await supabase.from("consultations").insert({ visit_id: visitId, patient_id: visit!.patient_id, service_key: visit!.service_key });
+    if (!visit) return;
+    const { error } = await supabase.from("consultations").insert({ visit_id: visitId, patient_id: visit.patient_id, service_key: visit.service_key });
     if (error && !error.message.includes("consultations_visit_id_key")) { toast.error(error.message); return; }
     invalidate();
   }
@@ -180,6 +183,7 @@ function Encounter() {
           <TabsTrigger value="vitals">Vital signs</TabsTrigger>
           <TabsTrigger value="consult">Consultation</TabsTrigger>
           <TabsTrigger value="dx">Diagnosis &amp; treatment</TabsTrigger>
+          <TabsTrigger value="prescriptions">Prescriptions</TabsTrigger>
           <TabsTrigger value="lab">Lab orders {pendingLab ? "•" : ""}</TabsTrigger>
           <TabsTrigger value="sign">Follow-up &amp; sign</TabsTrigger>
         </TabsList>
@@ -258,6 +262,10 @@ function Encounter() {
             <CardHeader className="pb-2"><CardTitle className="text-sm">Medication instructions</CardTitle></CardHeader>
             <CardContent>{consult ? <MedicationPanel visitId={visitId} patientId={p.id} consultationId={consult.id} editable={editable} /> : <p className="text-sm text-muted-foreground">Start the consultation first.</p>}</CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="prescriptions">
+          <PrescriptionPanel visitId={visitId} patientId={p.id} clinicianId={consult?.clinician_id ?? null} validEncounter={!!consult && !p.archived && !["waiting", "cancelled", "no_show"].includes(status)} />
         </TabsContent>
 
         <TabsContent value="lab" className="space-y-4">
