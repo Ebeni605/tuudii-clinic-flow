@@ -44,6 +44,10 @@ export const Route = createFileRoute("/_authenticated/admin/reports")({
     meta: [
       { title: "Reports — Two D Medium Clinic" },
       { name: "description", content: "Management reports for registrations, OPD, services, laboratory, queue, staff activity and billing." },
+      { property: "og:title", content: "Reports — Two D Medium Clinic" },
+      { property: "og:description", content: "Management reports for registrations, OPD, services, laboratory, queue, staff activity and billing." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: () => <RequireArea area="admin"><Reports /></RequireArea>,
