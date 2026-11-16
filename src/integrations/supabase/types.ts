@@ -2148,8 +2148,8 @@ export type Database = {
       }
       save_prescription: {
         Args: {
-          _diagnosis_id: string
-          _items: Json
+          _diagnosis_id?: string
+          _items?: Json
           _prescription_id?: string
           _replaces_id?: string
           _visit_id: string
