@@ -12,7 +12,7 @@ import { ageFromDob, referenceText } from "@/lib/workflow";
 
 export const Route = createFileRoute("/_authenticated/lab/report/$requestId")({
   beforeLoad: requireArea("results"),
-  head: () => ({ meta: [{ title: "Laboratory Report — Two D Medium Clinic" }, { name: "description", content: "Printable A4 laboratory report with verified results." }] }),
+  head: () => ({ meta: [{ title: "Laboratory Report — Two D Medium Clinic" }, { name: "description", content: "Printable A4 laboratory report with verified results." }, { property: "og:title", content: "Laboratory Report — Two D Medium Clinic" }, { property: "og:description", content: "Printable A4 laboratory report with verified results." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="results"><Report /></RequireArea>,
 });
 

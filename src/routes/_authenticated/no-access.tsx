@@ -5,7 +5,7 @@ import { useSignOut, useStaff } from "@/lib/auth";
 import { ACCOUNT_STATE_MESSAGES } from "@/lib/workflow";
 
 export const Route = createFileRoute("/_authenticated/no-access")({
-  head: () => ({ meta: [{ title: "No Access — Two D Medium Clinic" }] }),
+  head: () => ({ meta: [{ title: "No Access — Two D Medium Clinic" }, { name: "description", content: "No Access for authorized Two D Medium Clinic staff." }, { property: "og:title", content: "No Access — Two D Medium Clinic" }, { property: "og:description", content: "No Access for authorized Two D Medium Clinic staff." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: NoAccess,
 });
 

@@ -17,7 +17,7 @@ import { requireArea, useStaff } from "@/lib/auth";
 
 export const Route = createFileRoute("/_authenticated/patients/")({
   beforeLoad: requireArea("patients"),
-  head: () => ({ meta: [{ title: "Patients — Two D Medium Clinic" }] }),
+  head: () => ({ meta: [{ title: "Patients — Two D Medium Clinic" }, { name: "description", content: "Patients for authorized Two D Medium Clinic staff." }, { property: "og:title", content: "Patients — Two D Medium Clinic" }, { property: "og:description", content: "Patients for authorized Two D Medium Clinic staff." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="patients"><Patients /></RequireArea>,
 });
 

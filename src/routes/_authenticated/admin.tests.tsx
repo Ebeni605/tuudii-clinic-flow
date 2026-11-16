@@ -20,7 +20,7 @@ import { referenceText } from "@/lib/workflow";
 
 export const Route = createFileRoute("/_authenticated/admin/tests")({
   beforeLoad: requireArea("admin"),
-  head: () => ({ meta: [{ title: "Laboratory Test Catalogue — Two D Medium Clinic" }, { name: "description", content: "Configure laboratory tests, units, reference intervals and result types." }] }),
+  head: () => ({ meta: [{ title: "Laboratory Test Catalogue — Two D Medium Clinic" }, { name: "description", content: "Configure laboratory tests, units, reference intervals and result types." }, { property: "og:title", content: "Laboratory Test Catalogue — Two D Medium Clinic" }, { property: "og:description", content: "Configure laboratory tests, units, reference intervals and result types." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="admin"><Tests /></RequireArea>,
 });
 

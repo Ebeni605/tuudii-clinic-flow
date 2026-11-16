@@ -19,7 +19,7 @@ import { friendlyDbError } from "@/lib/patient-schema";
 
 export const Route = createFileRoute("/_authenticated/reception/queue")({
   beforeLoad: requireArea("reception"),
-  head: () => ({ meta: [{ title: "Check-in & Queue — Two D Medium Clinic" }] }),
+  head: () => ({ meta: [{ title: "Check-in & Queue — Two D Medium Clinic" }, { name: "description", content: "Check-in & Queue for authorized Two D Medium Clinic staff." }, { property: "og:title", content: "Check-in & Queue — Two D Medium Clinic" }, { property: "og:description", content: "Check-in & Queue for authorized Two D Medium Clinic staff." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="reception"><Queue /></RequireArea>,
 });
 

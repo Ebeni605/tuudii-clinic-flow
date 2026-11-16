@@ -25,7 +25,7 @@ export const Route = createFileRoute("/_authenticated/admin/audit")({
     to: searchDate(s["to"]),
   }),
   beforeLoad: requireArea("admin"),
-  head: () => ({ meta: [{ title: "Audit Log — Two D Medium Clinic" }, { name: "description", content: "Who changed which record, and when." }] }),
+  head: () => ({ meta: [{ title: "Audit Log — Two D Medium Clinic" }, { name: "description", content: "Who changed which record, and when." }, { property: "og:title", content: "Audit Log — Two D Medium Clinic" }, { property: "og:description", content: "Who changed which record, and when." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="admin"><Audit /></RequireArea>,
 });
 

@@ -12,7 +12,7 @@ import { AdminAnalytics } from "@/components/admin/AdminAnalytics";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   beforeLoad: requireArea("dashboard"),
-  head: () => ({ meta: [{ title: "Dashboard — Two D Medium Clinic" }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Two D Medium Clinic" }, { name: "description", content: "Dashboard for authorized Two D Medium Clinic staff." }, { property: "og:title", content: "Dashboard — Two D Medium Clinic" }, { property: "og:description", content: "Dashboard for authorized Two D Medium Clinic staff." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Dashboard,
 });
 

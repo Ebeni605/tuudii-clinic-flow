@@ -15,7 +15,7 @@ import { PASSWORD_HINT, passwordProblem } from "@/lib/session";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   beforeLoad: requireArea("dashboard"),
-  head: () => ({ meta: [{ title: "My Profile — Two D Medium Clinic" }] }),
+  head: () => ({ meta: [{ title: "My Profile — Two D Medium Clinic" }, { name: "description", content: "My Profile for authorized Two D Medium Clinic staff." }, { property: "og:title", content: "My Profile — Two D Medium Clinic" }, { property: "og:description", content: "My Profile for authorized Two D Medium Clinic staff." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: Profile,
 });
 

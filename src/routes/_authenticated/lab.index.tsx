@@ -19,7 +19,7 @@ import { ageFromDob } from "@/lib/workflow";
 
 export const Route = createFileRoute("/_authenticated/lab/")({
   beforeLoad: requireArea("lab"),
-  head: () => ({ meta: [{ title: "Laboratory Dashboard — Two D Medium Clinic" }, { name: "description", content: "Laboratory requests from OPD, specimens, processing and verification." }] }),
+  head: () => ({ meta: [{ title: "Laboratory Dashboard — Two D Medium Clinic" }, { name: "description", content: "Laboratory requests from OPD, specimens, processing and verification." }, { property: "og:title", content: "Laboratory Dashboard — Two D Medium Clinic" }, { property: "og:description", content: "Laboratory requests from OPD, specimens, processing and verification." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="lab"><LabDashboard /></RequireArea>,
 });
 

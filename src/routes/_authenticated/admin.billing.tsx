@@ -20,7 +20,7 @@ import { CHARGE_CATEGORY_LABEL, money, priceProblem, useBillingSettings } from "
 
 export const Route = createFileRoute("/_authenticated/admin/billing")({
   beforeLoad: requireArea("admin"),
-  head: () => ({ meta: [{ title: "Billing Setup — Two D Medium Clinic" }, { name: "description", content: "Switch optional billing on or off and maintain the approved price list." }] }),
+  head: () => ({ meta: [{ title: "Billing Setup — Two D Medium Clinic" }, { name: "description", content: "Switch optional billing on or off and maintain the approved price list." }, { property: "og:title", content: "Billing Setup — Two D Medium Clinic" }, { property: "og:description", content: "Switch optional billing on or off and maintain the approved price list." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="admin"><BillingSetup /></RequireArea>,
 });
 
