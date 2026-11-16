@@ -18,7 +18,7 @@ import { ageFromDob, canVerify } from "@/lib/workflow";
 
 export const Route = createFileRoute("/_authenticated/lab/request/$requestId")({
   beforeLoad: requireArea("lab"),
-  head: () => ({ meta: [{ title: "Laboratory Request — Two D Medium Clinic" }, { name: "description", content: "Specimens, test processing, results and verification for one laboratory request." }] }),
+  head: () => ({ meta: [{ title: "Laboratory Request — Two D Medium Clinic" }, { name: "description", content: "Specimens, test processing, results and verification for one laboratory request." }, { property: "og:title", content: "Laboratory Request — Two D Medium Clinic" }, { property: "og:description", content: "Specimens, test processing, results and verification for one laboratory request." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="lab"><LabRequest /></RequireArea>,
 });
 

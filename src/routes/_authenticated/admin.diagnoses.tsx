@@ -14,7 +14,7 @@ import { useDiagnosisCatalog } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/admin/diagnoses")({
   beforeLoad: requireArea("admin"),
-  head: () => ({ meta: [{ title: "Diagnosis Catalogue — Two D Medium Clinic" }, { name: "description", content: "Manage the list of diagnoses clinicians choose from." }] }),
+  head: () => ({ meta: [{ title: "Diagnosis Catalogue — Two D Medium Clinic" }, { name: "description", content: "Manage the list of diagnoses clinicians choose from." }, { property: "og:title", content: "Diagnosis Catalogue — Two D Medium Clinic" }, { property: "og:description", content: "Manage the list of diagnoses clinicians choose from." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="admin"><Diagnoses /></RequireArea>,
 });
 

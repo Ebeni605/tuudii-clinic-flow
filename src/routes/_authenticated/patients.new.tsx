@@ -20,7 +20,7 @@ import { ageFromDob } from "@/lib/workflow";
 export const Route = createFileRoute("/_authenticated/patients/new")({
   validateSearch: (s: Record<string, unknown>): { walkin?: boolean } => (s["walkin"] ? { walkin: true } : {}),
   beforeLoad: requireArea("reception"),
-  head: () => ({ meta: [{ title: "Register Patient — Two D Medium Clinic" }] }),
+  head: () => ({ meta: [{ title: "Register Patient — Two D Medium Clinic" }, { name: "description", content: "Register Patient for authorized Two D Medium Clinic staff." }, { property: "og:title", content: "Register Patient — Two D Medium Clinic" }, { property: "og:description", content: "Register Patient for authorized Two D Medium Clinic staff." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="reception"><NewPatient /></RequireArea>,
 });
 

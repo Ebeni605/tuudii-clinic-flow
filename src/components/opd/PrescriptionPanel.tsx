@@ -54,10 +54,10 @@ export function PrescriptionPanel({ visitId, patientId, clinicianId, validEncoun
     try {
       const { data: saved, error } = await supabase.rpc("save_prescription", {
         _visit_id: visitId,
-        _diagnosis_id: diagnosis || undefined,
+        ...(diagnosis ? { _diagnosis_id: diagnosis } : {}),
         _items: items,
-        _prescription_id: id ?? undefined,
-        _replaces_id: replaces ?? undefined,
+        ...(id ? { _prescription_id: id } : {}),
+        ...(replaces ? { _replaces_id: replaces } : {}),
       });
       if (error) throw error;
       if (!saved) throw new Error("The prescription was not saved. Please try again.");

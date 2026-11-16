@@ -12,7 +12,7 @@ import { requireArea } from "@/lib/auth";
 
 export const Route = createFileRoute("/_authenticated/reception/")({
   beforeLoad: requireArea("reception"),
-  head: () => ({ meta: [{ title: "Reception — Two D Medium Clinic" }] }),
+  head: () => ({ meta: [{ title: "Reception — Two D Medium Clinic" }, { name: "description", content: "Reception for authorized Two D Medium Clinic staff." }, { property: "og:title", content: "Reception — Two D Medium Clinic" }, { property: "og:description", content: "Reception for authorized Two D Medium Clinic staff." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="reception"><ReceptionDashboard /></RequireArea>,
 });
 

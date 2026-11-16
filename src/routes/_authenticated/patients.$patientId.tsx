@@ -22,7 +22,7 @@ import { ageFromDob, canAccess } from "@/lib/workflow";
 
 export const Route = createFileRoute("/_authenticated/patients/$patientId")({
   beforeLoad: requireArea("patients"),
-  head: () => ({ meta: [{ title: "Patient Record — Two D Medium Clinic" }] }),
+  head: () => ({ meta: [{ title: "Patient Record — Two D Medium Clinic" }, { name: "description", content: "Patient Record for authorized Two D Medium Clinic staff." }, { property: "og:title", content: "Patient Record — Two D Medium Clinic" }, { property: "og:description", content: "Patient Record for authorized Two D Medium Clinic staff." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="patients"><PatientProfile /></RequireArea>,
 });
 

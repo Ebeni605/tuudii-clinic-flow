@@ -23,7 +23,7 @@ import { BillingOff, STATE_VARIANT } from "@/components/billing/BillingOff";
 
 export const Route = createFileRoute("/_authenticated/billing/$invoiceId")({
   beforeLoad: requireArea("billing"),
-  head: () => ({ meta: [{ title: "Invoice — Two D Medium Clinic" }, { name: "description", content: "Invoice items, payments and receipts." }] }),
+  head: () => ({ meta: [{ title: "Invoice — Two D Medium Clinic" }, { name: "description", content: "Invoice items, payments and receipts." }, { property: "og:title", content: "Invoice — Two D Medium Clinic" }, { property: "og:description", content: "Invoice items, payments and receipts." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="billing"><InvoicePage /></RequireArea>,
 });
 

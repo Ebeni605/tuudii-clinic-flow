@@ -18,7 +18,7 @@ import { ageFromDob } from "@/lib/workflow";
 
 export const Route = createFileRoute("/_authenticated/opd/")({
   beforeLoad: requireArea("opd"),
-  head: () => ({ meta: [{ title: "OPD Dashboard — Two D Medium Clinic" }, { name: "description", content: "OPD queue, consultations in progress and laboratory follow-up." }] }),
+  head: () => ({ meta: [{ title: "OPD Dashboard — Two D Medium Clinic" }, { name: "description", content: "OPD queue, consultations in progress and laboratory follow-up." }, { property: "og:title", content: "OPD Dashboard — Two D Medium Clinic" }, { property: "og:description", content: "OPD queue, consultations in progress and laboratory follow-up." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="opd"><OpdDashboard /></RequireArea>,
 });
 

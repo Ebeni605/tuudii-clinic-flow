@@ -17,7 +17,7 @@ import { fmtDateTime } from "@/lib/opd-queries";
 
 export const Route = createFileRoute("/_authenticated/admin/deployment")({
   beforeLoad: requireArea("admin"),
-  head: () => ({ meta: [{ title: "Go-live Checklist — Two D Medium Clinic" }, { name: "description", content: "Deployment readiness gates and test-data cleanup before real patient use." }] }),
+  head: () => ({ meta: [{ title: "Go-live Checklist — Two D Medium Clinic" }, { name: "description", content: "Deployment readiness gates and test-data cleanup before real patient use." }, { property: "og:title", content: "Go-live Checklist — Two D Medium Clinic" }, { property: "og:description", content: "Deployment readiness gates and test-data cleanup before real patient use." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="admin"><Deployment /></RequireArea>,
 });
 

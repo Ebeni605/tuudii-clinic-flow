@@ -13,7 +13,7 @@ import { money, PAYMENT_METHOD_LABEL } from "@/lib/billing";
 
 export const Route = createFileRoute("/_authenticated/billing/receipt/$paymentId")({
   beforeLoad: requireArea("billing"),
-  head: () => ({ meta: [{ title: "Receipt — Two D Medium Clinic" }, { name: "description", content: "Printable payment receipt." }] }),
+  head: () => ({ meta: [{ title: "Receipt — Two D Medium Clinic" }, { name: "description", content: "Printable payment receipt." }, { property: "og:title", content: "Receipt — Two D Medium Clinic" }, { property: "og:description", content: "Printable payment receipt." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="billing"><ReceiptPage /></RequireArea>,
 });
 

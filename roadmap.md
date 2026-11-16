@@ -1,10 +1,11 @@
 # Roadmap
 
 ## Digital prescriptions
-- [ ] Secure draft/items/history storage and approved prescriber credentials
-- [ ] OPD prescription editor, authorization, cancellation/reissue and history
-- [ ] Clinic-branded A4 preview, printing and PDF export
-- [ ] Rule tests, fictional end-to-end checks and print verification
+- [x] Secure draft/items/history storage and admin-controlled prescriber credentials
+- [x] OPD prescription editor, authorization, cancellation/reissue and history
+- [x] Clinic-branded A4 preview, printing and browser Save as PDF
+- [x] 73 rule tests; Dr Ahmed fictional draft save/reload, cancellation/reissue, desktop/mobile preview and draft-print restriction checks
+- [ ] Authorized print end-to-end: waiting for administrator-confirmed clinician qualification and professional registration; do not invent credentials
 
 ## Phase 3 — OPD (done)
 ## Phase 4 — Laboratory (done)

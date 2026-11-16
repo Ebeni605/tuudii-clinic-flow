@@ -18,7 +18,7 @@ import { canVerify, referenceText } from "@/lib/workflow";
 
 export const Route = createFileRoute("/_authenticated/lab/verify")({
   beforeLoad: requireArea("lab"),
-  head: () => ({ meta: [{ title: "Result Verification — Two D Medium Clinic" }, { name: "description", content: "Review and verify laboratory results before they are released to OPD." }] }),
+  head: () => ({ meta: [{ title: "Result Verification — Two D Medium Clinic" }, { name: "description", content: "Review and verify laboratory results before they are released to OPD." }, { property: "og:title", content: "Result Verification — Two D Medium Clinic" }, { property: "og:description", content: "Review and verify laboratory results before they are released to OPD." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: () => <RequireArea area="lab"><Verify /></RequireArea>,
 });
 
