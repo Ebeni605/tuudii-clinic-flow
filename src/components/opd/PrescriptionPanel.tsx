@@ -51,7 +51,15 @@ export function PrescriptionPanel({ visitId, patientId, clinicianId, validEncoun
     if (items.some(m => !m.drug_name.trim())) { toast.error("Enter a generic drug name for every medicine."); return; }
     setBusy(true);
     try {
-      const { data: saved, error } = await supabase.rpc("save_prescription", { _visit_id: visitId, _diagnosis_id: diagnosis || undefined, _items: items, _prescription_id: id ?? undefined, _replaces_id: replaces ?? undefined });
+      const { data: saved, error } = await supabase.rpc("save_prescription", {
+        _visit_id: visitId,
+        // PostgreSQL accepts NULL here for a draft without a diagnosis; generated RPC types omit nullability.
+        // @ts-expect-error The required nullable UUID argument must be sent as null, not omitted.
+        _diagnosis_id: diagnosis || null,
+        _items: items,
+        _prescription_id: id ?? undefined,
+        _replaces_id: replaces ?? undefined,
+      });
       if (error) throw error;
       setId(saved);
       if (finalize) {
