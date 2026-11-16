@@ -22,11 +22,12 @@ export function PrescriptionPanel({ visitId, patientId, clinicianId, validEncoun
   const qc = useQueryClient();
   const history = useQuery(prescriptionHistoryQuery(patientId));
   const { data: diagnoses } = useQuery(dxQuery(visitId));
-  const { data: credentials } = useQuery({ queryKey: ["prescriber", clinicianId], enabled: !!clinicianId, queryFn: async () => {
+  const credentialQuery = useQuery({ queryKey: ["prescriber", clinicianId], enabled: !!clinicianId, queryFn: async () => {
     const { data, error } = await supabase.from("profiles").select("qualification, professional_registration").eq("id", clinicianId ?? "").maybeSingle();
     if (error) throw error;
     return data;
   } });
+  const credentials = credentialQuery.data;
   const [editor, setEditor] = useState(false);
   const [id, setId] = useState<string | null>(null);
   const [replaces, setReplaces] = useState<string | null>(null);
@@ -51,8 +52,15 @@ export function PrescriptionPanel({ visitId, patientId, clinicianId, validEncoun
     if (items.some(m => !m.drug_name.trim())) { toast.error("Enter a generic drug name for every medicine."); return; }
     setBusy(true);
     try {
-      const { data: saved, error } = await supabase.rpc("save_prescription", { _visit_id: visitId, _diagnosis_id: diagnosis || undefined, _items: items, _prescription_id: id ?? undefined, _replaces_id: replaces ?? undefined });
+      const { data: saved, error } = await supabase.rpc("save_prescription", {
+        _visit_id: visitId,
+        _diagnosis_id: diagnosis || undefined,
+        _items: items,
+        _prescription_id: id ?? undefined,
+        _replaces_id: replaces ?? undefined,
+      });
       if (error) throw error;
+      if (!saved) throw new Error("The prescription was not saved. Please try again.");
       setId(saved);
       if (finalize) {
         const { error: actionError } = await supabase.rpc("prescription_action", { _id: saved, _action: "finalized" });
@@ -77,7 +85,8 @@ export function PrescriptionPanel({ visitId, patientId, clinicianId, validEncoun
   if (history.error) return <LoadError onRetry={() => history.refetch()} />;
   return <section className="space-y-5">
     <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-semibold">Prescriptions</h2>{owner && validEncounter && !editor && <Button onClick={() => open()}><Plus className="mr-2 h-4 w-4" />New prescription</Button>}</div>
-    {owner && (!credentials?.qualification || !credentials.professional_registration) && <p className="rounded-md border border-warning/40 bg-warning/10 p-3 text-sm">Prescriber credentials awaiting administrator confirmation. Drafts can be saved; authorization is unavailable.</p>}
+    {owner && credentialQuery.error && <LoadError message="Could not check prescriber credentials." onRetry={() => credentialQuery.refetch()} />}
+    {owner && !credentialQuery.isPending && !credentialQuery.error && (!credentials?.qualification || !credentials.professional_registration) && <p className="rounded-md border border-warning/40 bg-warning/10 p-3 text-sm">Prescriber credentials awaiting administrator confirmation. Drafts can be saved; authorization is unavailable.</p>}
     {editor && owner && validEncounter && <div className="space-y-4 border-y py-5">
       <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-semibold">{replaces ? "Replacement prescription" : id ? "Edit prescription draft" : "New prescription draft"}</h3><Button variant="ghost" disabled={busy} onClick={() => { if (window.confirm("Close the editor? Unsaved changes will be lost.")) setEditor(false); }}>Close editor</Button></div>
       <F label="Encounter diagnosis" required><Select value={diagnosis || "none"} onValueChange={v => setDiagnosis(v === "none" ? "" : v)}><SelectTrigger aria-label="Encounter diagnosis"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="none">Select diagnosis</SelectItem>{diagnoses?.map(d => <SelectItem key={d.id} value={d.id}>{d.description}{d.icd10_code ? ` (${d.icd10_code})` : ""}</SelectItem>)}</SelectContent></Select></F>
@@ -91,7 +100,7 @@ export function PrescriptionPanel({ visitId, patientId, clinicianId, validEncoun
       <div className="flex flex-wrap items-start justify-between gap-3"><div className="min-w-0"><p className="break-all font-mono text-xs">{r.prescription_number}</p><p className="mt-1 text-sm capitalize">{r.status === "finalized" ? "Authorized" : r.status} · {fmtDateTime(r.created_at)}{r.visit_id !== visitId && " · Previous visit"}</p></div><div className="flex flex-wrap gap-2"><Button asChild size="sm" variant="outline"><Link to="/opd/prescription/$prescriptionId" params={{ prescriptionId: r.id }}><Printer className="mr-1 h-4 w-4" />View / print</Link></Button>{validEncounter && r.visit_id === visitId && canEditPrescription(me?.id, owner, r) && <Button size="sm" variant="outline" disabled={busy} onClick={() => open(r)}>Edit draft</Button>}{owner && r.clinician_id === me?.id && r.status !== "cancelled" && <Button size="sm" variant="outline" onClick={() => { setCancelling(r); setReason(""); }}>Cancel prescription</Button>}{owner && validEncounter && r.visit_id === visitId && r.status === "cancelled" && r.clinician_id === me?.id && <Button size="sm" variant="outline" onClick={() => open(r, true)}>Reissue</Button>}</div></div>
       <p className="mt-2 text-sm">{[...r.prescription_items].sort((a,b) => a.position-b.position).map(m => m.drug_name).join(" · ")}</p>{r.cancel_reason && <p className="mt-2 text-sm text-destructive">Cancellation: {r.cancel_reason}</p>}{r.replaces_id && <p className="mt-1 text-xs text-muted-foreground">Replacement for a cancelled prescription</p>}
     </article>)}</div>
-    <Dialog open={authorize} onOpenChange={setAuthorize}><DialogContent><DialogHeader><DialogTitle>Authorize this prescription?</DialogTitle><DialogDescription>Your identity and authorization time will be recorded. Medicines and patient details will be locked; corrections require cancellation and reissue.</DialogDescription></DialogHeader><Button disabled={busy || problems.length > 0} onClick={() => save(true)}>{busy ? "Saving…" : "Confirm authorization"}</Button></DialogContent></Dialog>
+    <Dialog open={authorize} onOpenChange={o => !busy && setAuthorize(o)}><DialogContent><DialogHeader><DialogTitle>Authorize this prescription?</DialogTitle><DialogDescription>Your identity and authorization time will be recorded. Medicines and patient details will be locked; corrections require cancellation and reissue.</DialogDescription></DialogHeader><Button disabled={busy || problems.length > 0} onClick={() => save(true)}>{busy ? "Saving…" : "Confirm authorization"}</Button></DialogContent></Dialog>
     <Dialog open={!!cancelling} onOpenChange={o => !busy && !o && setCancelling(null)}><DialogContent><DialogHeader><DialogTitle>Cancel prescription</DialogTitle><DialogDescription>The prescription and its medicines remain in the patient history.</DialogDescription></DialogHeader><F label="Cancellation / correction reason" required><Textarea value={reason} maxLength={2000} onChange={e => setReason(e.target.value)} /></F><Button variant="destructive" disabled={busy || reason.trim().length < 3} onClick={cancel}>Confirm cancellation</Button></DialogContent></Dialog>
   </section>;
 }
