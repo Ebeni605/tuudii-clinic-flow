@@ -150,3 +150,6 @@
   .prescription-table { min-width: 0; font-size: 9pt; }
   .prescription-table-wrap { overflow: visible; }
 }
+.rx-frame > thead { display: table-header-group; }
+.rx-running { display: none; }
+@media print { .rx-running { display: flex; } .rx-frame tr { break-inside: auto; } }
