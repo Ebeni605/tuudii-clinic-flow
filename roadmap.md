@@ -30,6 +30,17 @@
 - [x] 3. Backup/restore record, synthetic-data cleanup tool (admin-approved), 10-gate deployment readiness checklist
 - [x] Tests + typecheck + final report
 
+## Remixed copy (this project)
+- [x] Database structure files restored into the copy (0000-0018 + migration journal)
+- [x] Migration record-keeping repaired: it arrived empty, so every new database change replayed 0000 and failed with "type app_role already exists"
+- [x] Reference lists restored: 10 clinic services, 56 laboratory tests (54 active; B/F and BF locked until the lab confirms them)
+- [x] Sign-in page renders with the clinic logo; correct backend for this copy; no console errors; build OK; 73 tests pass
+- [x] Staff registration verified end-to-end (backend accepts, confirmation email required, then admin approval); throwaway test account removed
+- [ ] Waiting on the clinic: what this copy is for (live system vs safe testing place)
+- [ ] Waiting on the clinic: create the first administrator account (you choose the password) - only works while no administrator exists
+- [ ] After an administrator exists: recreate the three office accounts, enter the diagnosis list, and approve prices if billing is wanted
+- [ ] Not applicable here: diagnosis catalogue and prices are entered by the administrator in their own screens; prescription_settings is not read by the app
+
 ## Later / needs the clinic
 - Perform a real backup restore and fill in the record in docs/GO_LIVE.md
 - Clinic to enter validated units/reference intervals; confirm meaning of B/F and BF
