@@ -33,7 +33,8 @@ function PrescriptionPage() {
   const prescriber = object(snapshot["prescriber"]);
   const diagnosis = object(snapshot["diagnosis"]);
   const authorized = canPrintPrescription(r);
-  const canPrint = authorized && me?.id === r.clinician_id && me.roles.includes("clinician");
+  const isDraft = r.status === "draft";
+  const canPrint = (authorized || isDraft) && me?.id === r.clinician_id && me.roles.includes("clinician");
   const name = [patient["first_name"], patient["middle_name"], patient["last_name"]].filter(Boolean).join(" ");
   async function print(pdf = false) {
     if (!r || !canPrint) return;
@@ -53,15 +54,16 @@ function PrescriptionPage() {
       <Button asChild variant="outline"><Link to="/opd/visit/$visitId" params={{ visitId: r.visit_id }}><ArrowLeft className="mr-2 h-4 w-4" />Encounter</Link></Button>
       <div className="flex flex-wrap gap-2"><Button disabled={!canPrint || busy} onClick={() => print()}><Printer className="mr-2 h-4 w-4" />Print A4</Button><Button variant="outline" disabled={!canPrint || busy} onClick={() => print(true)}><FileDown className="mr-2 h-4 w-4" />Save as PDF</Button></div>
     </div>
-    <p className="no-print mb-4 text-sm text-muted-foreground">{!authorized ? "Draft or cancelled prescriptions cannot be printed." : !canPrint ? "Only the prescribing clinician may request printing." : "For a PDF, choose Save as PDF in the print dialog."}</p>
-    <article className={`prescription-paper print-area a4-page mx-auto border bg-card p-5 text-sm shadow-sm sm:p-8 ${authorized ? "" : "prescription-unprintable"}`}>
+    <p className="no-print mb-4 text-sm text-muted-foreground">{isDraft ? "Draft copy: it prints with a DRAFT – NOT VALID FOR DISPENSING mark. Authorize it to print the official copy." : !authorized ? "Cancelled prescriptions cannot be printed." : !canPrint ? "Only the prescribing clinician may request printing." : "For a PDF, choose Save as PDF in the print dialog."}</p>
+    <article className={`prescription-paper print-area a4-page mx-auto border bg-card p-5 text-sm shadow-sm sm:p-8 ${authorized || isDraft ? "" : "prescription-unprintable"} relative`}>
+      {isDraft && <div aria-hidden className="pointer-events-none absolute inset-0 flex items-center justify-center"><span className="-rotate-30 select-none text-5xl font-bold text-destructive/20 sm:text-6xl">DRAFT – NOT VALID</span></div>}
       <table className="rx-frame w-full border-collapse"><thead><tr><td className="p-0">
       <header className="prescription-header flex items-center gap-4 border-b-2 border-primary pb-4">
         <ClinicLogo className="h-16 w-16 shrink-0" /><div className="min-w-0 flex-1 text-center"><h1 className="text-base font-bold text-primary">{CLINIC.name}</h1><p>{CLINIC.amharic}</p><p className="font-semibold">{CLINIC.english}</p><p className="text-xs">Tel: {text(snapshot["phones"]) || CLINIC.phones}</p>{text(snapshot["clinic_address"]) && <p className="text-xs">{text(snapshot["clinic_address"])}</p>}</div>
       </header>
         <p className="rx-running mt-1 flex flex-wrap justify-between gap-2 border-b pb-1 text-xs"><span><b>Rx:</b> {r.prescription_number}</span><span><b>Patient:</b> {name || "—"} · {text(patient["mrn"])}</span></p>
       </td></tr></thead><tbody><tr><td className="p-0">
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2"><h2 className="text-lg font-bold text-primary">Medical Prescription</h2><span className={authorized ? "font-semibold text-primary" : "font-bold text-destructive"}>{authorized ? "AUTHORIZED" : r.status.toUpperCase()}</span></div>
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-2"><h2 className="text-lg font-bold text-primary">Medical Prescription</h2><span className={authorized ? "font-semibold text-primary" : "font-bold text-destructive"}>{authorized ? "AUTHORIZED" : isDraft ? "DRAFT – NOT VALID FOR DISPENSING" : r.status.toUpperCase()}</span></div>
       <p className="mt-1 break-all font-mono text-xs">{r.prescription_number}</p>
       <dl className="my-4 grid grid-cols-1 gap-x-5 gap-y-2 sm:grid-cols-2 prescription-details">
         <Detail label="Patient name" value={name} /><Detail label="Patient / card no." value={text(patient["mrn"])} />

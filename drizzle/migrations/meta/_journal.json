@@ -127,6 +127,13 @@
       "when": 1794806501128,
       "tag": "0017_prescription_nullable_draft_diagnosis",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1795030180810,
+      "tag": "0018_allow_draft_prescription_print",
+      "breakpoints": true
     }
   ]
 }
