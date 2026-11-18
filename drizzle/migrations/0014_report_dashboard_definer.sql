@@ -1,1 +1,0 @@
-ALTER FUNCTION public.report_dashboard(date, date, text) SECURITY DEFINER;
