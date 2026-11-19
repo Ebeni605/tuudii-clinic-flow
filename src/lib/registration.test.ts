@@ -41,6 +41,10 @@ describe("account state after sign-in", () => {
   it("approved active staff with a role may enter", () => {
     expect(accountState({ approvalStatus: "approved", active: true, roles: ["lab_tech"] })).toBe("ok");
   });
+  it("the first administrator is approved and active before entering the dashboard", () => {
+    expect(accountState({ approvalStatus: "approved", active: true, roles: ["admin"] })).toBe("ok");
+    expect(homeFor(["admin"])).toBe("/dashboard");
+  });
 });
 
 describe("department home after sign-in", () => {

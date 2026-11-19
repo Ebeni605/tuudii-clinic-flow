@@ -44,9 +44,26 @@ export const bootstrapAdmin = createServerFn({ method: "POST" })
       user_metadata: { full_name: data.fullName },
     });
     if (error || !created.user) throw new Error(error?.message ?? "Could not create user");
-    await supabaseAdmin.from("profiles").upsert({ id: created.user.id, full_name: data.fullName });
-    await supabaseAdmin.from("user_roles").insert({ user_id: created.user.id, role: "admin" });
-    await auditAccountEvent(created.user.id, created.user.id, "FIRST_ADMIN_CREATED", { email: data.email });
+    const uid = created.user.id;
+    // A first administrator is approved immediately. Pending defaults would make the role insert fail,
+    // leaving an auth-only account that can sign in but can never administer the clinic.
+    const { error: profileError } = await supabaseAdmin.from("profiles").upsert({
+      id: uid,
+      full_name: data.fullName,
+      email: data.email,
+      approval_status: "approved",
+      active: true,
+    });
+    if (profileError) {
+      await supabaseAdmin.auth.admin.deleteUser(uid);
+      throw new Error(profileError.message);
+    }
+    const { error: roleError } = await supabaseAdmin.from("user_roles").insert({ user_id: uid, role: "admin" });
+    if (roleError) {
+      await supabaseAdmin.auth.admin.deleteUser(uid);
+      throw new Error(roleError.message);
+    }
+    await auditAccountEvent(uid, uid, "FIRST_ADMIN_CREATED", { email: data.email });
     return { ok: true };
   });
 
@@ -70,15 +87,33 @@ export const createStaff = createServerFn({ method: "POST" })
     });
     if (error || !created.user) throw new Error(error?.message ?? "Could not create user");
     const uid = created.user.id;
-    // Profile row may already exist from the sign-up trigger; write it as the admin so the audit log names them
-    await supabaseAdmin.from("profiles").upsert({ id: uid, full_name: data.fullName, phone: data.phone || null });
+    // Profile row may already exist from the sign-up trigger. Keep it pending and inactive until
+    // the authenticated approval RPC assigns the first role; never leave an auth-only staff account.
+    const { error: profileError } = await supabaseAdmin.from("profiles").upsert({
+      id: uid,
+      full_name: data.fullName,
+      phone: data.phone || null,
+      email: data.email,
+      approval_status: "pending_approval",
+      active: false,
+    });
+    if (profileError) {
+      await supabaseAdmin.auth.admin.deleteUser(uid);
+      throw new Error(profileError.message);
+    }
     // Admin-created accounts are approved immediately with their first role (same RPC as registration approval)
     const [first, ...rest] = [...new Set(data.roles)] as [AppRole, ...AppRole[]];
     const { error: ae } = await context.supabase.rpc("approve_staff_registration", { _user_id: uid, _role: first });
-    if (ae) throw new Error(ae.message);
+    if (ae) {
+      await supabaseAdmin.auth.admin.deleteUser(uid);
+      throw new Error(ae.message);
+    }
     if (rest.length) {
       const { error: re } = await context.supabase.from("user_roles").insert(rest.map((r) => ({ user_id: uid, role: r })));
-      if (re) throw new Error(re.message);
+      if (re) {
+        await supabaseAdmin.auth.admin.deleteUser(uid);
+        throw new Error(re.message);
+      }
     }
     await auditAccountEvent(context.userId, uid, "STAFF_CREATED", { email: data.email, roles: data.roles });
     return { ok: true };

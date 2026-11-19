@@ -141,6 +141,13 @@
       "when": 1795033277575,
       "tag": "0019_seed_reference_data",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1795099549228,
+      "tag": "0020_restore_staff_registration_trigger",
+      "breakpoints": true
     }
   ]
 }
