@@ -36,7 +36,7 @@
 - [x] Reference lists restored: 10 clinic services, 56 laboratory tests (54 active; B/F and BF locked until the lab confirms them)
 - [x] Sign-in page renders with the clinic logo; correct backend for this copy; no console errors; build OK; 73 tests pass
 - [x] Staff registration verified end-to-end (backend accepts, confirmation email required, then admin approval); throwaway test account removed
-- [ ] Waiting on the clinic: what this copy is for (live system vs safe testing place)
+- [x] Clinic confirmed this copy is intended for live operation; no fictional accounts or patient records were added for setup
 - [ ] Waiting on the clinic: create the first administrator account (you choose the password) - only works while no administrator exists
 - [ ] After an administrator exists: recreate the three office accounts, enter the diagnosis list, and approve prices if billing is wanted
 - [ ] Not applicable here: diagnosis catalogue and prices are entered by the administrator in their own screens; prescription_settings is not read by the app
