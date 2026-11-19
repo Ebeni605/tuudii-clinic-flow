@@ -37,7 +37,7 @@
 - [x] Sign-in page renders with the clinic logo; correct backend for this copy; no console errors; build OK; 73 tests pass
 - [x] Staff registration verified end-to-end (backend accepts, confirmation email required, then admin approval); throwaway test account removed
 - [x] Clinic confirmed this copy is intended for live operation; no fictional accounts or patient records were added for setup
-- [ ] Restore access using the clinic's previous account email; waiting for the user to identify the account (passwords cannot be copied between backends)
+- [ ] Previous account identified as qa.admin@example.test; waiting for the user to choose a real live-admin email or explicitly approve temporary test-admin recreation (passwords cannot be copied between backends)
 - [ ] Waiting on the clinic: create the first administrator account (you choose the password) - only works while no administrator exists
 - [ ] After an administrator exists: recreate the three office accounts, enter the diagnosis list, and approve prices if billing is wanted
 - [ ] Not applicable here: diagnosis catalogue and prices are entered by the administrator in their own screens; prescription_settings is not read by the app
