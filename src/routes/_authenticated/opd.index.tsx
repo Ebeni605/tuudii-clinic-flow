@@ -65,12 +65,13 @@ function OpdDashboard() {
     (!needle || v.patients?.mrn.toLowerCase().includes(needle) || patientName(v.patients).toLowerCase().includes(needle)));
   const svc = (k: string) => services?.find((s) => s.key === k)?.name ?? k;
 
-  async function call(id: string) {
+  async function call(id: string, prescribe = false) {
     const { data, error } = await supabase.from("visits").update({ status: "in_consultation" }).eq("id", id).eq("status", "waiting").select("id");
     if (error) { toast.error(error.message); return; }
     if (!data?.length) toast.info("This patient was already called by another clinician.");
     qc.invalidateQueries({ queryKey: ["opd_queue"] });
-    navigate({ to: "/opd/visit/$visitId", params: { visitId: id } });
+    if (prescribe) navigate({ to: "/opd/write-prescription/$visitId", params: { visitId: id } });
+    else navigate({ to: "/opd/visit/$visitId", params: { visitId: id } });
   }
 
   return (
@@ -162,11 +163,14 @@ function OpdDashboard() {
                         })()}
                       </div>
                     </TableCell>
-                    <TableCell className="text-right">
+                    <TableCell className="text-right"><div className="flex flex-wrap justify-end gap-2">
+                      {isClinician && !["cancelled", "no_show"].includes(v.status) && (v.status === "waiting"
+                        ? <Button size="sm" variant="secondary" onClick={() => call(v.id, true)}>Write Prescription</Button>
+                        : <Button size="sm" variant="secondary" asChild><Link to="/opd/write-prescription/$visitId" params={{ visitId: v.id }}>Write Prescription</Link></Button>)}
                       {v.status === "waiting" && isClinician
                         ? <Button size="sm" onClick={() => call(v.id)}>Start consultation</Button>
                         : <Button size="sm" variant="outline" asChild><Link to="/opd/visit/$visitId" params={{ visitId: v.id }}>{v.status === "ready_for_review" ? "Review results" : "Open"}</Link></Button>}
-                    </TableCell>
+                    </div></TableCell>
                   </TableRow>
                 ))}
               </TableBody>

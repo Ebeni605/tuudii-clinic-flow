@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle } from "lucide-react";
@@ -32,8 +32,9 @@ function NewPatient() {
   const qc = useQueryClient();
   const { data: services } = useServices();
   const [busy, setBusy] = useState(false);
-  const [checkIn, setCheckIn] = useState(!!walkin);
+  const [checkIn, setCheckIn] = useState(walkin ?? true);
   const [service, setService] = useState("");
+  useEffect(() => { if (!service && services?.length) setService(services[0]!.key); }, [services, service]);
   const [pending, setPending] = useState<PatientFormValues | null>(null);
   const [matches, setMatches] = useState<Match[]>([]);
   const [formKey] = useState(0);
