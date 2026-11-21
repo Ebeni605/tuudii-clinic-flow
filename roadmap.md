@@ -1,5 +1,11 @@
 # Roadmap
 
+## Official document signatures
+- [ ] Store the supplied OPD and laboratory signature images privately and register them as controlled clinic assets
+- [ ] Show the OPD signature only on authorized prescriptions; show the laboratory signature only on final verified reports
+- [ ] Add administrator-only replacement with mandatory reasons and audit history
+- [ ] Verify A4 printing, reprints, permissions and existing rule tests
+
 ## Digital prescriptions
 - [x] Secure draft/items/history storage and admin-controlled prescriber credentials
 - [x] OPD prescription editor, authorization, cancellation/reissue and history

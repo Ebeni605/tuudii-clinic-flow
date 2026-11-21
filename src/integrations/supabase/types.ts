@@ -1264,6 +1264,42 @@ export type Database = {
           },
         ]
       }
+      official_signatures: {
+        Row: {
+          change_reason: string
+          content_type: string
+          created_at: string
+          file_path: string
+          id: string
+          original_filename: string
+          updated_at: string
+          updated_by: string | null
+          version: number
+        }
+        Insert: {
+          change_reason: string
+          content_type: string
+          created_at?: string
+          file_path: string
+          id: string
+          original_filename: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Update: {
+          change_reason?: string
+          content_type?: string
+          created_at?: string
+          file_path?: string
+          id?: string
+          original_filename?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Relationships: []
+      }
       patients: {
         Row: {
           address: string | null
