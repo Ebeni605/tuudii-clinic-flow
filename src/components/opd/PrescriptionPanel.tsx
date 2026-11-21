@@ -33,6 +33,18 @@ export function PrescriptionPanel({ visitId, patientId, clinicianId, validEncoun
   const [replaces, setReplaces] = useState<string | null>(null);
   const [diagnosis, setDiagnosis] = useState("");
   const [items, setItems] = useState<Medicine[]>([emptyMedicine()]);
+  const [newDx, setNewDx] = useState("");
+  async function addDiagnosis() {
+    const name = newDx.trim();
+    if (!name) { toast.error("Type a diagnosis first."); return; }
+    setBusy(true);
+    const { data, error } = await supabase.from("diagnoses").insert({ visit_id: visitId, patient_id: patientId, description: name.slice(0, 200), diagnosis_type: diagnoses?.length ? "secondary" : "primary" }).select("id").single();
+    setBusy(false);
+    if (error) { toast.error(error.message); return; }
+    setNewDx(""); setDiagnosis(data.id);
+    await qc.invalidateQueries({ queryKey: ["dx", visitId] });
+    toast.success("Diagnosis added");
+  }
   const [busy, setBusy] = useState(false);
   const [authorize, setAuthorize] = useState(false);
   const [cancelling, setCancelling] = useState<Prescription | null>(null);
@@ -90,6 +102,7 @@ export function PrescriptionPanel({ visitId, patientId, clinicianId, validEncoun
     {editor && owner && validEncounter && <div className="space-y-4 border-y py-5">
       <div className="flex flex-wrap items-center justify-between gap-2"><h3 className="font-semibold">{replaces ? "Replacement prescription" : id ? "Edit prescription draft" : "New prescription draft"}</h3><Button variant="ghost" disabled={busy} onClick={() => { if (window.confirm("Close the editor? Unsaved changes will be lost.")) setEditor(false); }}>Close editor</Button></div>
       <F label="Encounter diagnosis" required><Select value={diagnosis || "none"} onValueChange={v => setDiagnosis(v === "none" ? "" : v)}><SelectTrigger aria-label="Encounter diagnosis"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="none">Select diagnosis</SelectItem>{diagnoses?.map(d => <SelectItem key={d.id} value={d.id}>{d.description}{d.icd10_code ? ` (${d.icd10_code})` : ""}</SelectItem>)}</SelectContent></Select></F>
+      <div className="flex flex-wrap items-end gap-2"><F label="Or add a new diagnosis" className="min-w-0 flex-1"><Input maxLength={200} value={newDx} placeholder="e.g. Acute tonsillitis" onChange={e => setNewDx(e.target.value)} /></F><Button type="button" variant="outline" disabled={busy || !newDx.trim()} onClick={addDiagnosis}><Plus className="mr-2 h-4 w-4" />Add diagnosis</Button></div>
       {items.map((m, i) => <fieldset key={i} disabled={busy} className="border-b pb-4"><legend className="mb-3 flex w-full items-center justify-between font-semibold">Medicine {i + 1}<Button title="Remove medicine" aria-label={`Remove medicine ${i + 1}`} size="icon" variant="ghost" disabled={items.length === 1 || busy} onClick={() => setItems(items.filter((_, j) => j !== i))}><Trash2 className="h-4 w-4" /></Button></legend><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{MEDICINE_FIELDS.map(k => <F key={k} label={LABELS[k]} required={["drug_name", "dose", "route", "frequency", "duration", "quantity"].includes(k)} className={k === "instructions" || k === "other_information" ? "sm:col-span-2" : ""}>{k === "instructions" || k === "other_information" ? <Textarea maxLength={2000} value={m[k]} onChange={e => setItems(items.map((x,j) => j === i ? { ...x, [k]: e.target.value } : x))} /> : <Input maxLength={k === "drug_name" || k === "brand_name" ? 200 : 100} value={m[k]} onChange={e => setItems(items.map((x,j) => j === i ? { ...x, [k]: e.target.value } : x))} />}</F>)}</div></fieldset>)}
       <div className="flex flex-wrap gap-2"><Button variant="outline" disabled={busy || items.length >= 50} onClick={() => setItems([...items, emptyMedicine()])}><Plus className="mr-2 h-4 w-4" />Add medicine</Button><Button variant="outline" disabled={busy} onClick={() => save()}><Save className="mr-2 h-4 w-4" />Save draft</Button><Button disabled={busy || problems.length > 0} onClick={() => setAuthorize(true)}><FileSignature className="mr-2 h-4 w-4" />Save prescription</Button>{id ? <Button asChild variant="outline"><Link to="/opd/prescription/$prescriptionId" params={{ prescriptionId: id }}><Printer className="mr-2 h-4 w-4" />Preview / print</Link></Button> : <Button variant="outline" disabled title="Save a draft first to preview"><Printer className="mr-2 h-4 w-4" />Preview / print</Button>}<Button variant="ghost" disabled={busy} onClick={() => { if (window.confirm("Cancel editing? Unsaved changes will be lost.")) setEditor(false); }}>Cancel</Button></div>
       {problems.length > 0 && <ul className="list-disc pl-5 text-sm text-muted-foreground">{problems.map(p => <li key={p}>{p}</li>)}</ul>}
