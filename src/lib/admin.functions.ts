@@ -221,7 +221,7 @@ export const listSyntheticData = createServerFn({ method: "POST" })
       })),
       users: (users?.users ?? []).map((u) => ({
         id: u.id,
-        email: u.email || p.email || "",
+        email: u.email ?? "",
         fullName: profiles?.find((p) => p.id === u.id)?.full_name ?? "",
         roles: (roles ?? []).filter((r) => r.user_id === u.id).map((r) => r.role as AppRole),
         isYou: u.id === context.userId,
