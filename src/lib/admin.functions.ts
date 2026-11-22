@@ -124,16 +124,20 @@ export const listStaff = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     await assertAdmin(context);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const [{ data: users }, { data: profiles }, { data: roles }] = await Promise.all([
-      supabaseAdmin.auth.admin.listUsers({ perPage: 500 }),
+    // Profiles are the staff list; auth users only add sign-in details, so a failed
+    // auth listing never hides staff from the administrator.
+    const [usersRes, { data: profiles, error: pErr }, { data: roles }] = await Promise.all([
+      supabaseAdmin.auth.admin.listUsers({ perPage: 1000 }).catch(() => ({ data: { users: [] } })),
       supabaseAdmin.from("profiles").select("*"),
       supabaseAdmin.from("user_roles").select("user_id, role"),
     ]);
-    return (users?.users ?? []).map((u) => {
-      const p = profiles?.find((x) => x.id === u.id);
+    if (pErr) throw new Error(pErr.message);
+    const authUsers = (usersRes?.data?.users ?? []) as { id: string; email?: string; last_sign_in_at?: string; created_at: string }[];
+    return (profiles ?? []).map((p) => {
+      const u = authUsers.find((x) => x.id === p.id) ?? { id: p.id, email: p.email ?? "", last_sign_in_at: undefined, created_at: p.created_at };
       return {
         id: u.id,
-        email: u.email ?? "",
+        email: u.email || p.email || "",
         fullName: p?.full_name ?? "",
         phone: p?.phone ?? "",
         active: p?.active ?? true,
@@ -217,7 +221,7 @@ export const listSyntheticData = createServerFn({ method: "POST" })
       })),
       users: (users?.users ?? []).map((u) => ({
         id: u.id,
-        email: u.email ?? "",
+        email: u.email || p.email || "",
         fullName: profiles?.find((p) => p.id === u.id)?.full_name ?? "",
         roles: (roles ?? []).filter((r) => r.user_id === u.id).map((r) => r.role as AppRole),
         isYou: u.id === context.userId,

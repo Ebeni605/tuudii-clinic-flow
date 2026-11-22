@@ -45,7 +45,7 @@ function Staff() {
   const list = useServerFn(listStaff);
   const create = useServerFn(createStaff);
   const update = useServerFn(updateStaff);
-  const { data, refetch } = useQuery({ queryKey: ["staff"], queryFn: () => list() });
+  const { data, refetch, error } = useQuery({ queryKey: ["staff"], queryFn: () => list() });
   const [open, setOpen] = useState(false);
   const [f, setF] = useState({ fullName: "", email: "", phone: "", password: "", roles: [] as AppRole[] });
   const [edit, setEdit] = useState<null | { userId: string; name: string; roles: AppRole[]; active: boolean; canSelfVerify: boolean; canVerifyLab: boolean; newPassword: string }>(null);
@@ -85,6 +85,7 @@ function Staff() {
           </Dialog>
         } />
       <PendingRequests rows={(data ?? []).filter((s) => s.approvalStatus === "pending_approval")} onDone={() => refetch()} />
+      {error && <Card className="mb-4 p-4 text-sm text-destructive">Could not load staff list: {(error as Error).message} <Button size="sm" variant="outline" className="ml-2" onClick={() => refetch()}>Retry</Button></Card>}
       <Card>
         <Table>
           <TableHeader><TableRow><TableHead>Name</TableHead><TableHead>Email</TableHead><TableHead>Roles</TableHead><TableHead>Status</TableHead><TableHead>Last sign in</TableHead><TableHead /></TableRow></TableHeader>
