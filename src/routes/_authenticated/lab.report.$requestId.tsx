@@ -8,6 +8,8 @@ import { requireArea } from "@/lib/auth";
 import { LAB_SECTIONS, patientName, useServices, useStaffNames } from "@/lib/data";
 import { encounterRef, labRequestQuery, visitRef } from "@/lib/lab-queries";
 import { fmtDateTime } from "@/lib/opd-queries";
+import { OfficialSignature } from "@/components/OfficialSignature";
+import { shouldPrintLaboratorySignature, useOfficialSignature } from "@/lib/official-signatures";
 import { ageFromDob, referenceText } from "@/lib/workflow";
 
 export const Route = createFileRoute("/_authenticated/lab/report/$requestId")({
@@ -23,6 +25,11 @@ function Report() {
   const { data: names } = useStaffNames();
   const { data: services } = useServices();
   const { data: req, isLoading, error, refetch } = useQuery(labRequestQuery(requestId));
+  const items = req?.lab_request_items ?? [];
+  const showSig = !!req && shouldPrintLaboratorySignature(
+    items.filter((i) => i.status !== "verified" && i.status !== "cancelled").length,
+    items.filter((i) => i.status === "verified").length);
+  const { data: sig } = useOfficialSignature("laboratory", showSig);
   if (isLoading) return <PageLoading />;
   if (error) return <LoadError onRetry={() => refetch()} />;
   if (!req) return <LoadError message="Report not found." />;
@@ -132,6 +139,7 @@ function Report() {
           <div>
             <div><b>Verified by:</b> {verifiers || "………………………"}</div>
             <div><b>Verified on:</b> {lastVerified ? fmtDateTime(lastVerified) : "………………………"}</div>
+            {showSig && sig?.url && <OfficialSignature department="laboratory" url={sig.url} />}
             <div className="mt-6 border-t border-foreground pt-1 text-xs">Signature &amp; laboratory stamp</div>
           </div>
         </div>

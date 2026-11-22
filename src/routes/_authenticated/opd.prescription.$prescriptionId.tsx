@@ -10,6 +10,8 @@ import { requireArea, useStaff } from "@/lib/auth";
 import { canPrintPrescription, prescriptionQuery } from "@/lib/prescriptions";
 import { fmtDate, fmtDateTime } from "@/lib/opd-queries";
 import { supabase } from "@/integrations/supabase/client";
+import { OfficialSignature } from "@/components/OfficialSignature";
+import { shouldPrintPrescriptionSignature, useOfficialSignature } from "@/lib/official-signatures";
 
 export const Route = createFileRoute("/_authenticated/opd/prescription/$prescriptionId")({
   beforeLoad: requireArea("opd"),
@@ -26,6 +28,8 @@ function PrescriptionPage() {
   const { data: r } = useSuspenseQuery(prescriptionQuery(prescriptionId));
   const { data: me } = useStaff();
   const qc = useQueryClient();
+  const showSig = !!r && shouldPrintPrescriptionSignature(r.status);
+  const { data: sig } = useOfficialSignature("opd", showSig);
   const [busy, setBusy] = useState(false);
   if (!r) return <LoadError message="Prescription not found or access unavailable." />;
   const snapshot = object(r.snapshot);
@@ -82,7 +86,7 @@ function PrescriptionPage() {
       <section className="prescription-instructions mt-5"><h3 className="border-b border-primary pb-1 font-semibold text-primary">Additional instructions</h3>{(() => { const lines = [...r.prescription_items].sort((a,b) => a.position-b.position).flatMap(m => [m.instructions, m.other_information].filter(Boolean).map(t => `${m.position}. ${m.drug_name}: ${t}`)); return lines.length ? <ul className="mt-2 space-y-1 whitespace-pre-wrap">{lines.map(l => <li key={l}>{l}</li>)}</ul> : <p className="mt-2 text-muted-foreground">—</p>; })()}</section>
       {r.cancel_reason && <p className="mt-4 text-destructive"><b>Cancelled:</b> {r.cancel_reason}</p>}
       <div className="prescription-signatures mt-8 grid gap-6 sm:grid-cols-2">
-        <section className="space-y-2"><h3 className="border-b border-primary pb-1 font-semibold text-primary">Prescriber</h3><p><b>Full name:</b> {text(prescriber["full_name"]) || "—"}</p><p><b>Registration:</b> {text(prescriber["professional_registration"]) || "—"}</p><p><b>Designation:</b> {text(prescriber["qualification"]) || "—"}</p><p><b>Authorized:</b> {fmtDateTime(r.finalized_at)}</p><p className="pt-6">Signature: ____________________</p></section>
+        <section className="space-y-2"><h3 className="border-b border-primary pb-1 font-semibold text-primary">Prescriber</h3><p><b>Full name:</b> {text(prescriber["full_name"]) || "—"}</p><p><b>Registration:</b> {text(prescriber["professional_registration"]) || "—"}</p><p><b>Designation:</b> {text(prescriber["qualification"]) || "—"}</p><p><b>Authorized:</b> {fmtDateTime(r.finalized_at)}</p>{showSig && sig?.url ? <OfficialSignature department="opd" url={sig.url} /> : <p className="pt-6">Signature: ____________________</p>}</section>
         <section className="space-y-2"><h3 className="border-b border-primary pb-1 font-semibold text-primary">Dispenser</h3><p>Full name: ____________________</p><p>Qualification: __________________</p><p>Registration: __________________</p><p>Date: ________________________</p><p className="pt-6">Signature: ____________________</p></section>
       </div>
       </td></tr></tbody></table>
