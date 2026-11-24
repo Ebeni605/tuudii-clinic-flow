@@ -1,5 +1,13 @@
 # Roadmap
 
+## Paper prescription and second OPD clinician
+- [ ] Match the supplied paper prescription layout without changing clinic contact details or inventing prices
+- [ ] Create permanent additional clinician account for nuriyaaman44@gmail.com through admin staff creation
+- [ ] Provide a separate clinician OPD workspace with shared patient records
+- [ ] Store and select the second clinician's own signature, preserving the existing signatures
+- [ ] Verify workspace, signatures, print layout and tests
+- [ ] Confirm the new clinician's real name, qualification and registration before authorized prescribing
+
 ## Official document signatures
 - [ ] Store the supplied OPD and laboratory signature images privately and register them as controlled clinic assets
 - [ ] Show the OPD signature only on authorized prescriptions; show the laboratory signature only on final verified reports
