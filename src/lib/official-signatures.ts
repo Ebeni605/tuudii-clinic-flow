@@ -26,6 +26,28 @@ export function useOfficialSignature(department: SignatureDepartment, enabled = 
   return useQuery({ ...officialSignatureQuery(department), enabled });
 }
 
+export function prescriberSignaturePath(snapshotPath: string | null, currentPath: string | null) {
+  return snapshotPath || currentPath;
+}
+
+export function usePrescriberSignature(clinicianId: string | undefined, snapshotPath: string | null, enabled: boolean) {
+  return useQuery({
+    queryKey: ["prescriber-signature", clinicianId, snapshotPath],
+    enabled: enabled && !!clinicianId,
+    staleTime: 4 * 60 * 1000,
+    queryFn: async () => {
+      if (!clinicianId) return null;
+      const { data, error } = await supabase.from("clinician_signatures").select("file_path").eq("clinician_id", clinicianId).maybeSingle();
+      if (error) throw error;
+      const path = prescriberSignaturePath(snapshotPath, data?.file_path ?? null);
+      if (!path) return null;
+      const { data: signed, error: signedError } = await supabase.storage.from("clinic-signatures").createSignedUrl(path, 300);
+      if (signedError) throw signedError;
+      return { url: signed.signedUrl };
+    },
+  });
+}
+
 export function shouldPrintPrescriptionSignature(status: string) {
   return status === "finalized" || status === "printed";
 }

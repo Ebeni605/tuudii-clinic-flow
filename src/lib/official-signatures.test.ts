@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { shouldPrintLaboratorySignature, shouldPrintPrescriptionSignature, signatureFileProblem } from "./official-signatures";
+import { prescriberSignaturePath, shouldPrintLaboratorySignature, shouldPrintPrescriptionSignature, signatureFileProblem } from "./official-signatures";
 
 describe("official document signatures", () => {
+  it("keeps the authorized signature snapshot rather than a later replacement", () => {
+    expect(prescriberSignaturePath("opd/nuriya/version-1.png", "opd/nuriya/version-2.png")).toBe("opd/nuriya/version-1.png");
+    expect(prescriberSignaturePath(null, "opd/ahmed/original.png")).toBe("opd/ahmed/original.png");
+    expect(prescriberSignaturePath(null, null)).toBeNull();
+  });
   it("appears on finalized and reprinted prescriptions, never on drafts or cancelled prescriptions", () => {
     expect(shouldPrintPrescriptionSignature("finalized")).toBe(true);
     expect(shouldPrintPrescriptionSignature("printed")).toBe(true);

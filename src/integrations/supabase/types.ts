@@ -202,6 +202,47 @@ export type Database = {
         }
         Relationships: []
       }
+      clinician_signatures: {
+        Row: {
+          change_reason: string
+          clinician_id: string
+          content_type: string
+          file_path: string
+          original_filename: string
+          updated_at: string
+          updated_by: string | null
+          version: number
+        }
+        Insert: {
+          change_reason: string
+          clinician_id: string
+          content_type: string
+          file_path: string
+          original_filename: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Update: {
+          change_reason?: string
+          clinician_id?: string
+          content_type?: string
+          file_path?: string
+          original_filename?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinician_signatures_clinician_id_fkey"
+            columns: ["clinician_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       consultation_amendments: {
         Row: {
           consultation_id: string
@@ -1573,6 +1614,7 @@ export type Database = {
           prescription_number: string
           print_count: number
           replaces_id: string | null
+          signature_file_path: string | null
           snapshot: Json
           status: string
           updated_at: string
@@ -1591,6 +1633,7 @@ export type Database = {
           prescription_number?: string
           print_count?: number
           replaces_id?: string | null
+          signature_file_path?: string | null
           snapshot?: Json
           status?: string
           updated_at?: string
@@ -1609,6 +1652,7 @@ export type Database = {
           prescription_number?: string
           print_count?: number
           replaces_id?: string | null
+          signature_file_path?: string | null
           snapshot?: Json
           status?: string
           updated_at?: string

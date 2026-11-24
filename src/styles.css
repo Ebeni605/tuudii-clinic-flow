@@ -153,3 +153,21 @@
 .rx-frame > thead { display: table-header-group; }
 .rx-running { display: none; }
 @media print { .rx-running { display: flex; } .rx-frame tr { break-inside: auto; } }
+
+/* Traditional prescription form, using clinic theme tokens. */
+.traditional-rx { font-family: Georgia, "Noto Sans Ethiopic", serif; }
+.traditional-rx h1, .traditional-rx h2, .traditional-rx h3 { font-family: inherit; letter-spacing: 0; }
+.rx-paper-table th, .rx-paper-table td { border-color: var(--foreground); padding: 6px 8px; }
+.rx-paper-table .rx-blank-row { height: 32px; }
+.traditional-rx .prescription-header { flex-direction: row; }
+@media (max-width: 639px) {
+  .traditional-rx .prescription-header { flex-direction: column; }
+  .rx-paper-table { min-width: 0; font-size: 12px; }
+}
+@media print {
+  .traditional-rx { font-size: 11pt; }
+  .traditional-rx .prescription-header { flex-direction: row; }
+  .rx-paper-table { font-size: 10pt; }
+  .rx-patient-lines { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .rx-patient-lines > div:nth-child(1), .rx-patient-lines > div:nth-child(4), .rx-patient-lines > div:nth-child(5) { grid-column: span 2; }
+}

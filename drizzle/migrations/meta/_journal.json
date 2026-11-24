@@ -162,6 +162,13 @@
       "when": 1795365917966,
       "tag": "0022_lab_signature_visible_to_clinicians",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1795504783945,
+      "tag": "0023_individual_clinician_signatures",
+      "breakpoints": true
     }
   ]
 }

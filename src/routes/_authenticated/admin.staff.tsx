@@ -19,6 +19,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PrescriberSettings } from "@/components/admin/PrescriberSettings";
+import { ClinicianSignatureSettings } from "@/components/admin/ClinicianSignatureSettings";
 
 export const Route = createFileRoute("/_authenticated/admin/staff")({
   beforeLoad: requireArea("admin"),
@@ -104,6 +105,7 @@ function Staff() {
         </Table>
       </Card>
       <PrescriberSettings />
+      <ClinicianSignatureSettings />
       <Dialog open={!!edit} onOpenChange={(o) => !o && setEdit(null)}>
         <DialogContent>
           <DialogHeader><DialogTitle>Edit {edit?.name}</DialogTitle></DialogHeader>

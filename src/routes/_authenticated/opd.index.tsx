@@ -15,6 +15,7 @@ import { patientName, today, useLiveTable, useServices, VISIT_STATUS_LABEL } fro
 import { fmtTime } from "@/lib/opd-queries";
 import { useStaff, requireArea } from "@/lib/auth";
 import { ageFromDob } from "@/lib/workflow";
+import { belongsInClinicianWorkspace } from "@/lib/opd-workspace";
 
 export const Route = createFileRoute("/_authenticated/opd/")({
   beforeLoad: requireArea("opd"),
@@ -24,7 +25,7 @@ export const Route = createFileRoute("/_authenticated/opd/")({
 
 const STATUS_FILTERS = ["waiting", "in_consultation", "awaiting_lab", "ready_for_review", "completed", "cancelled", "no_show"];
 
-function OpdDashboard() {
+export function OpdDashboard({ personal = false }: { personal?: boolean }) {
   const [date, setDate] = useState(today());
   const [service, setService] = useState("all");
   const [status, setStatus] = useState("open");
@@ -48,7 +49,7 @@ function OpdDashboard() {
     },
   });
 
-  const all = visits ?? [];
+  const all = (visits ?? []).filter(v => !personal || (!!me && belongsInClinicianWorkspace(v, me.id)));
   const count = (s: string[]) => all.filter((v) => s.includes(v.status)).length;
   const stats = [
     { label: "Waiting", value: count(["waiting"]), icon: Clock, filter: "waiting" },
@@ -76,7 +77,7 @@ function OpdDashboard() {
 
   return (
     <div>
-      <PageHeader title="OPD dashboard" subtitle="Patients come here automatically when Reception checks them in." />
+      <PageHeader title={personal ? `OPD — ${me?.fullName ?? "My workspace"}` : "OPD dashboard"} subtitle={personal ? "My encounters & waiting patients" : "Patients come here automatically when Reception checks them in."} />
 
       <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5">
         {stats.map((s) => (

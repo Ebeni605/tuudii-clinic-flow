@@ -29,7 +29,7 @@ const NAV: { label: string; area: Area; items: { title: string; url: string; ico
       { title: "Appointments", url: "/reception/appointments", icon: CalendarDays },
     ],
   },
-  { label: "OPD", area: "opd", items: [{ title: "OPD dashboard", url: "/opd", icon: Stethoscope }, { title: "Prescriptions", url: "/opd/prescriptions", icon: ScrollText }] },
+  { label: "OPD", area: "opd", items: [{ title: "My OPD workspace", url: "/opd/my-workspace", icon: Stethoscope }, { title: "OPD dashboard", url: "/opd", icon: Stethoscope }, { title: "Prescriptions", url: "/opd/prescriptions", icon: ScrollText }] },
   {
     label: "Laboratory", area: "lab", items: [
       { title: "Lab dashboard", url: "/lab", icon: FlaskConical },
