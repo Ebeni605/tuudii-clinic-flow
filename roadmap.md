@@ -1,5 +1,10 @@
 # Roadmap
 
+## Prescription save button
+- [x] Enable Save prescription for draft saving independently of authorization credentials
+- [x] Keep authorization separate; verified Nuriya's Save button is enabled and six prescription tests pass (no clinical records added)
+- [ ] Final authorization for Nuriya waits for her real qualification and professional registration
+
 ## Paper prescription and second OPD clinician
 - [ ] Match the supplied paper prescription layout without changing clinic contact details or inventing prices
 - [ ] Create permanent additional clinician account for nuriyaaman44@gmail.com through admin staff creation
