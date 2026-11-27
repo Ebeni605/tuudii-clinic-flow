@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "events": {
+    "project.prescription_authorized": {
+      "event_schema_version": 1,
+      "description": "The existing prescription authorization action succeeded; no signature image, prescriber identity, or patient information is collected.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    },
+    "project.prescription_draft_saved": {
+      "event_schema_version": 1,
+      "description": "A prescription draft was successfully persisted, including the draft save preceding authorization.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "intent": {
+            "enum": [
+              "draft",
+              "authorization"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "intent"
+        ],
+        "type": "object"
+      }
+    },
+    "project.prescription_validation_failed": {
+      "event_schema_version": 1,
+      "description": "A prescription save or authorization attempt was rejected by validation; no entered values or error messages are collected.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "additionalProperties": false,
+        "properties": {
+          "reason": {
+            "enum": [
+              "missing_drug_name",
+              "authorization_requirements",
+              "server_validation"
+            ],
+            "type": "string"
+          },
+          "stage": {
+            "enum": [
+              "draft",
+              "authorization"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "stage",
+          "reason"
+        ],
+        "type": "object"
+      }
+    }
+  }
+}

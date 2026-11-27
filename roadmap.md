@@ -1,5 +1,11 @@
 # Roadmap
 
+## Privacy-conscious prescription analytics
+- [x] Track successful draft saves, rejected validation attempts and successful authorization in the existing editor
+- [x] Register three closed event schemas without identifiers, medical text, error messages or signature assets
+- [x] Verify handler behavior and privacy with seven action tests and validate all three catalog entries
+- [ ] Confirm event delivery during actual clinic usage; signed-in browser verification unavailable because the requesting user has no matching clinic account
+
 ## Prescription save button
 - [x] Enable Save prescription for draft saving independently of authorization credentials
 - [x] Keep authorization separate; verified Nuriya's Save button is enabled and six prescription tests pass (no clinical records added)

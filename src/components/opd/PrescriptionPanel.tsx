@@ -60,9 +60,17 @@ export function PrescriptionPanel({ visitId, patientId, clinicianId, validEncoun
     setEditor(true);
   }
   async function save(finalize = false) {
-    if (finalize && problems.length) return;
-    if (items.some(m => !m.drug_name.trim())) { toast.error("Enter a generic drug name for every medicine."); return; }
+    if (busy) return;
+    if (finalize && problems.length) {
+      window.__lovableEvents?.track?.("project.prescription_validation_failed", { stage: "authorization", reason: "authorization_requirements" });
+      return;
+    }
+    if (items.some(m => !m.drug_name.trim())) {
+      window.__lovableEvents?.track?.("project.prescription_validation_failed", { stage: finalize ? "authorization" : "draft", reason: "missing_drug_name" });
+      toast.error("Enter a generic drug name for every medicine."); return;
+    }
     setBusy(true);
+    let stage: "draft" | "authorization" = "draft";
     try {
       const { data: saved, error } = await supabase.rpc("save_prescription", {
         _visit_id: visitId,
@@ -73,14 +81,24 @@ export function PrescriptionPanel({ visitId, patientId, clinicianId, validEncoun
       });
       if (error) throw error;
       if (!saved) throw new Error("The prescription was not saved. Please try again.");
+      window.__lovableEvents?.track?.("project.prescription_draft_saved", { intent: finalize ? "authorization" : "draft" });
       setId(saved);
       if (finalize) {
+        stage = "authorization";
         const { error: actionError } = await supabase.rpc("prescription_action", { _id: saved, _action: "finalized" });
         if (actionError) throw actionError;
+        window.__lovableEvents?.track?.("project.prescription_authorized", {});
         setEditor(false); setAuthorize(false);
       }
       toast.success(finalize ? "Prescription authorized" : "Prescription draft saved");
-    } catch (e) { toast.error(e instanceof Error ? e.message : (e as { message: string }).message); }
+    } catch (e) {
+      // Only allowlisted validation categories enter analytics, never DB messages or entered clinical values.
+      const code = typeof e === "object" && e !== null && "code" in e ? e.code : null;
+      if (code === "23514" || code === "22023" || code === "P0001") {
+        window.__lovableEvents?.track?.("project.prescription_validation_failed", { stage, reason: "server_validation" });
+      }
+      toast.error(e instanceof Error ? e.message : (e as { message: string }).message);
+    }
     finally { setBusy(false); await refresh(); }
   }
   async function cancel() {
