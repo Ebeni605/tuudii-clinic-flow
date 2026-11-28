@@ -39,4 +39,4 @@
 - Password strength and idle sign-out rules live in `src/lib/session.ts` and are shared by the browser and admin server functions, so both sides enforce the same rule.
 - Go-live, backup/restore and rollback procedures live in `docs/GO_LIVE.md`; only mark backup/restore as verified there after evidence is recorded.
 - Prescriptions use RPC-only writes and immutable authorized snapshots; the encounter clinician alone saves/authorizes/cancels/reissues, while admin manages credentials through profile RLS. Dedicated A4 prescription pages use browser printing (including Save as PDF), and audit print requests without claiming physical print success.
-- The prescription save RPC defaults the draft diagnosis to NULL, so incomplete drafts can be saved without bypassing authorization validation.
+- Prescription save RPC defaults draft diagnosis to NULL (drafts save freely); authorizing needs an admin-set qualification, registration number optional (clinic decision) — `prescription_action` + `authorizationProblems`.

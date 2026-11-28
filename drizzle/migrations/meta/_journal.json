@@ -169,6 +169,13 @@
       "when": 1795504783945,
       "tag": "0023_individual_clinician_signatures",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1795848632749,
+      "tag": "0024_prescription_registration_optional",
+      "breakpoints": true
     }
   ]
 }

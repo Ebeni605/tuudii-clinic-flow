@@ -15,7 +15,9 @@ export function canPrintPrescription(r: Pick<Prescription, "status">) {
 export function authorizationProblems(items: Medicine[], diagnosis: string, qualification: string | null, registration: string | null) {
   const problems: string[] = [];
   if (!diagnosis) problems.push("Select an encounter diagnosis.");
-  if (!qualification?.trim() || !registration?.trim()) problems.push("Administrator must confirm prescriber qualification and professional registration.");
+  // Clinic policy: a confirmed qualification is required; the licence/registration number is optional.
+  void registration;
+  if (!qualification?.trim()) problems.push("Administrator must confirm prescriber qualification.");
   if (!items.length || items.length > 50) problems.push("Enter between 1 and 50 medicines.");
   items.forEach((m, i) => {
     const missing = (["drug_name", "dose", "route", "frequency", "duration", "quantity"] as const).filter(k => !m[k].trim());

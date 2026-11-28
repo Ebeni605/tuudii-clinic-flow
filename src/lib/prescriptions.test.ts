@@ -16,7 +16,8 @@ describe("prescription authorization", () => {
   });
   const complete = { ...emptyMedicine(), drug_name: "Fictional medicine", dose: "1 unit", route: "Oral", frequency: "Once", duration: "1 day", quantity: "1" };
   it("requires a diagnosis", () => expect(authorizationProblems([complete], "", "MD", "TEST")).toContain("Select an encounter diagnosis."));
-  it("requires administrator-confirmed credentials", () => expect(authorizationProblems([complete], "dx", "", "").length).toBe(1));
+  it("requires an administrator-confirmed qualification", () => expect(authorizationProblems([complete], "dx", "", "TEST").length).toBe(1));
+  it("does not require a registration number", () => expect(authorizationProblems([complete], "dx", "OPD doctor", null)).toEqual([]));
   it("requires between one and fifty medicines", () => {
     expect(authorizationProblems([], "dx", "MD", "TEST")).toContain("Enter between 1 and 50 medicines.");
     expect(authorizationProblems(Array.from({ length: 50 }, () => complete), "dx", "MD", "TEST")).toEqual([]);
